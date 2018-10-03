@@ -34,7 +34,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://www.moesif.com/developer-documentation',
+    url='https://www.moesif.com/docs',
 
     # Author details
     author='Moesif, Inc',
