@@ -6,6 +6,24 @@ import json
 
 
 class DataPreparation():
+
+    # Function to base64 encode data
+    def base64_encode(self, data):
+        try:
+            if global_variables.DEBUG:
+                print("about to parse request body as base64")
+            encoded_body = base64.standard_b64encode(data)
+            transfer_encoding = 'base64'
+            if global_variables.DEBUG:
+                print("base64 encoded body: " + encoded_body)
+        except:
+            if global_variables.DEBUG:
+                print("Request body is of type other than json or base64")
+            encoded_body = None
+            transfer_encoding = None
+
+        return encoded_body, transfer_encoding
+
     # Function to prepare the data
     def transform_data(self, method, url, start_time, end_time, response, kwargs):
 
@@ -20,25 +38,25 @@ class DataPreparation():
         if kwargs.get('data', None):
             try:
                 if global_variables.DEBUG:
-                    print("about to parse request body as json")
-                req_body = json.loads(kwargs.get('data', None))
+                    print("about to parse request data as json")
+                req_body = json.loads(json.dumps(kwargs.get('data', None)))
                 if global_variables.DEBUG:
-                    print("Req body json parsed succesfully")
+                    print("Req body data parsed successfully")
                 req_body = utility_function.mask_body(req_body, global_variables.moesif_options.get('REQUEST_BODY_MASKS'))
                 req_body_transfer_encoding = 'json'
             except:
-                try:
-                    if global_variables.DEBUG:
-                        print("about to parse request body as base64")
-                    req_body = base64.standard_b64encode(kwargs.get('data', None))
-                    req_body_transfer_encoding = 'base64'
-                    if global_variables.DEBUG:
-                        print("base64 encoded body: " + req_body)
-                except:
-                    if global_variables.DEBUG:
-                        print("Request body is of type other than json or base64")
-                    req_body = None
-                    req_body_transfer_encoding = None
+                req_body, req_body_transfer_encoding = self.base64_encode(json.dumps(kwargs.get('data', None)))
+        elif kwargs.get('json', None):
+            try:
+                if global_variables.DEBUG:
+                    print('about to parse request json')
+                req_body = json.loads(kwargs.get('json', None))
+                if global_variables.DEBUG:
+                    print("Req body json parsed successfully")
+                req_body = utility_function.mask_body(req_body, global_variables.moesif_options.get('REQUEST_BODY_MASKS'))
+                req_body_transfer_encoding = 'json'
+            except:
+                req_body, req_body_transfer_encoding = self.base64_encode(kwargs.get('json', None))
         else:
             req_body = None
             req_body_transfer_encoding = None
