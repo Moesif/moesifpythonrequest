@@ -1,6 +1,5 @@
 # Import Libraries
 from moesifapi.models import EventModel
-from ..data_preparation.transform_data import DataPreparation
 from ..utility_function.utility_function import UtilityFunction
 from ..outgoing_recorder.outgoing_recorder import OutgoingRecorder
 import requests
@@ -24,15 +23,13 @@ class PatchRequest():
             # Create an instance of the Outgoing Recorder class
             outgoing_recorder = OutgoingRecorder()
             utility_function = UtilityFunction()
-            data_preparation = DataPreparation()
 
             start_time = utility_function.get_current_time()
             response = old_request_function(method, url, **kwargs)
             end_time = utility_function.get_current_time()
 
             if not utility_function.is_moesif(kwargs.get('headers', None), url):
-                transform_event = data_preparation.transform_data(method, url, start_time, end_time, response, kwargs)
-                generated_recorder = outgoing_recorder.prepare_recorder(global_variables.moesif_options, transform_event)
+                generated_recorder = outgoing_recorder.prepare_recorder(global_variables.moesif_options, response.request, response, start_time, end_time)
 
                 if isinstance(generated_recorder, EventModel):
                     moesif_response = recorder(global_variables.moesif_options.get('APPLICATION_ID'), generated_recorder)
