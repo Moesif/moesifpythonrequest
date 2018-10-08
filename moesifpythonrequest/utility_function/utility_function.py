@@ -51,16 +51,11 @@ class UtilityFunction():
             return ''
         return APIHelper.json_serialize(value)
 
-    # Function to transform the request headers
-    def transform_key(self, key):
-        key = key.upper()
-        key = key.replace('-', '_')
-        return key
 
     # Function to create request headers
     def create_request_headers(self, req_headers):
         try:
-            req_headers = {self.transform_key(k): v for k, v in req_headers.items()}
+            req_headers = {k: v for k, v in req_headers.items()}
         except:
             req_headers = {}
         return req_headers
