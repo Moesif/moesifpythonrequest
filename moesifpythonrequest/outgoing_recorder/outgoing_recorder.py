@@ -69,14 +69,14 @@ class OutgoingRecorder():
                 'verb': mock_req.method,
                 'api_version': global_variables.moesif_options.get('API_VERSION', None),
                 'ip_address': None,
-                'headers': mock_req.headers._store,
+                'headers': utility_function.create_request_headers(mock_req.headers),
                 'body': req_body,
                 'transfer_encoding': req_body_transfer_encoding
             },
             'response': {
                 'time': end_time,
                 'status': mock_res.status_code,
-                'headers': mock_res.headers._store,
+                'headers': utility_function.create_request_headers(mock_res.headers),
                 'body': rsp_body,
                 'transfer_encoding': rsp_body_transfer_encoding
             },
