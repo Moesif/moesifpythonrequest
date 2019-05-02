@@ -8,7 +8,7 @@
 
 This is a library to patch the Requests lib for capturing outgoing API calls to send to Moesif for API Analytics.
 
-It is imported as a dependency in higher level middleware like [Moesif Django Middleware](https://github.com/moesif/moesifpythonrequest) and [Moesif WSGI Middleware](https://github.com/moesif/moesifwsgi) which we recommend checking out first.
+It is imported as a dependency in higher level middleware like [Moesif Django Middleware](https://github.com/Moesif/moesifdjango) and [Moesif WSGI Middleware](https://github.com/moesif/moesifwsgi) which we recommend checking out first.
 
 [ico-built-for]: https://img.shields.io/badge/built%20for-python%20requests-blue.svg
 [ico-version]: https://img.shields.io/pypi/v/moesifpythonrequest.svg
