@@ -4,6 +4,7 @@ from ..utility_function.utility_function import UtilityFunction
 from ..outgoing_recorder.outgoing_recorder import OutgoingRecorder
 import requests
 from .. import global_variables
+from requests import sessions
 
 
 class PatchRequest():
@@ -17,24 +18,37 @@ class PatchRequest():
         old_put_function = requests.put
         old_patch_function = requests.patch
         old_delete_function = requests.delete
+        old_session_function = sessions.Session.request
 
-        # Patch the requests function
-        def new_request_function(method, url, **kwargs):
+        # Patch the session.Session.request function
+        def new_session_function(session, method, url, params=None, data=None, headers=None, cookies=None, files=None,
+                                 auth=None, timeout=None, allow_redirects=True, proxies=None, hooks=None, stream=None,
+                                 verify=None, cert=None, json=None):
+
             # Create an instance of the Outgoing Recorder class
             outgoing_recorder = OutgoingRecorder()
             utility_function = UtilityFunction()
 
             start_time = utility_function.get_current_time()
-            response = old_request_function(method, url, **kwargs)
+            response = old_session_function(session, method=method.upper(), url=url, headers=headers,
+                                            files=files, data=data or {}, json=json, params=params or {},
+                                            auth=auth, cookies=cookies, hooks=hooks, stream=stream, verify=verify,
+                                            cert=cert, allow_redirects=allow_redirects, proxies=proxies,
+                                            timeout=timeout)
             end_time = utility_function.get_current_time()
 
-            if not utility_function.is_moesif(kwargs.get('headers', None), url):
+            if not utility_function.is_moesif(headers, url):
                 generated_recorder = outgoing_recorder.prepare_recorder(global_variables.moesif_options, response.request, response, start_time, end_time)
 
                 if isinstance(generated_recorder, EventModel):
                     moesif_response = recorder(global_variables.moesif_options.get('APPLICATION_ID'), generated_recorder)
 
             return response
+
+        # Patch the request function
+        def new_request_function(method, url, **kwargs):
+            with sessions.Session() as session:
+                return new_session_function(session, method=method, url=url, **kwargs)
 
         def new_get_function(url, params=None, **kwargs):
             r"""Sends a GET request.
@@ -127,6 +141,7 @@ class PatchRequest():
         requests.put = new_put_function
         requests.patch = new_patch_function
         requests.delete = new_delete_function
+        sessions.Session.request = new_session_function
 
         # Function to unpatch the requests
         def _unpatch():
