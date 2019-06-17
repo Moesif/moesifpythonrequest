@@ -82,6 +82,7 @@ class OutgoingRecorder():
             },
             'session_token': event_model['session_token'],
             'user_id': event_model['user_id'],
+            'company_id': event_model['company_id'],
             'metadata': event_model['metadata']
         }
 
@@ -99,6 +100,15 @@ class OutgoingRecorder():
         except:
             if global_variables.DEBUG:
                 print("can not execute identify_user function, Please check moesif settings.")
+
+        event_model['company_id'] = None
+        try:
+            identify_company = options.get('IDENTIFY_COMPANY_OUTGOING', None)
+            if identify_company is not None:
+                event_model['company_id'] = identify_company(mock_req, mock_res)
+        except:
+            if global_variables.DEBUG:
+                print("can not execute identify_company function, Please check moesif settings.")
 
         event_model['session_token'] = None
         try:
