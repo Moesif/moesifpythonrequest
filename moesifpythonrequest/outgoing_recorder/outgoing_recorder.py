@@ -32,7 +32,7 @@ class OutgoingRecorder():
         # Create an instance of the class
         utility_function = UtilityFunction()
 
-        if mock_req.body:
+        if global_variables.moesif_options.get('LOG_BODY_OUTGOING', True) and mock_req.body:
             try:
                 if global_variables.DEBUG:
                     print('about to parse request json')
@@ -47,7 +47,7 @@ class OutgoingRecorder():
             req_body = None
             req_body_transfer_encoding = None
 
-        if mock_res.content:
+        if global_variables.moesif_options.get('LOG_BODY_OUTGOING', True) and mock_res.content:
             try:
                 if global_variables.DEBUG:
                     print("about to process response body as json")
