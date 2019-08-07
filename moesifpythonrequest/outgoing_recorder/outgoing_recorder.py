@@ -13,14 +13,14 @@ class OutgoingRecorder():
     def base64_encode(self, data):
         try:
             if global_variables.DEBUG:
-                print("about to parse request body as base64")
-            encoded_body = base64.standard_b64encode(data)
+                print("about to parse outgoing body as base64")
+            encoded_body = (base64.standard_b64encode(data)).decode(encoding='UTF-8')
             transfer_encoding = 'base64'
             if global_variables.DEBUG:
                 print("base64 encoded body: " + encoded_body)
         except:
             if global_variables.DEBUG:
-                print("Request body is of type other than json or base64")
+                print("Outgoing Body is of type other than json or base64")
             encoded_body = None
             transfer_encoding = None
 
