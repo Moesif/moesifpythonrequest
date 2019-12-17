@@ -83,7 +83,8 @@ class OutgoingRecorder():
             'session_token': event_model['session_token'],
             'user_id': event_model['user_id'],
             'company_id': event_model['company_id'],
-            'metadata': event_model['metadata']
+            'metadata': event_model['metadata'],
+            'direction': 'Outgoing'
         }
 
         return mo_model
