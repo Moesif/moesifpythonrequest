@@ -3,7 +3,7 @@ from moesifapi.models import EventModel
 from ..utility_function.utility_function import UtilityFunction
 from ..outgoing_recorder.outgoing_recorder import OutgoingRecorder
 import requests
-from .. import global_variables
+from .. import global_variables as gv
 from requests import sessions
 
 
@@ -38,10 +38,10 @@ class PatchRequest():
             end_time = utility_function.get_current_time()
 
             if not utility_function.is_moesif(headers, url):
-                generated_recorder = outgoing_recorder.prepare_recorder(global_variables.moesif_options, response.request, response, start_time, end_time)
+                generated_recorder = outgoing_recorder.prepare_recorder(gv.moesif_options, response.request, response, start_time, end_time)
 
                 if isinstance(generated_recorder, EventModel):
-                    moesif_response = recorder(global_variables.moesif_options.get('APPLICATION_ID'), generated_recorder)
+                    moesif_response = recorder(generated_recorder)
 
             return response
 
