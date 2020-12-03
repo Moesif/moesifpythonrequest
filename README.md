@@ -8,7 +8,7 @@
 
 Interceptor for Python Requests lib to capture _outgoing_ API calls and sends to [Moesif](https://www.moesif.com) for API analytics and monitoring. 
 
-_If you are using Moesif's API monitoring SDKs like [Moesif Django](https://github.com/Moesif/moesifdjango) or [Moesif WSGI](https://github.com/moesif/moesifwsgi) to log _incoming_ API calls, this library is already included._
+_If you are using Moesif's API monitoring SDKs like [Moesif Django](https://github.com/Moesif/moesifdjango) or [Moesif WSGI](https://github.com/moesif/moesifwsgi) to log incoming API calls, this library is already included._
 
 ## How to install
 
