@@ -8,7 +8,7 @@
 
 Interceptor for Python Requests lib to capture _outgoing_ API calls and sends to [Moesif](https://www.moesif.com) for API analytics and monitoring. 
 
-_If you are using Moesif's API monitoring SDKs like [Moesif Django](https://github.com/Moesif/moesifdjango) or [Moesif WSGI](https://github.com/moesif/moesifwsgi) to log _incoming_ API calls, this library is already included._
+_If you are using Moesif's API monitoring SDKs like [Moesif Django](https://github.com/Moesif/moesifdjango) or [Moesif WSGI](https://github.com/moesif/moesifwsgi) to log incoming API calls, this library is already included._
 
 ## How to install
 
@@ -67,6 +67,9 @@ but different frameworks and your implementation might be very different, it wou
 ##### __`SKIP_OUTGOING`__
 (optional) _(req, res) => boolean_, a function that takes a [Requests](http://docs.python-requests.org/en/master/api/) request and response,
 and returns true if you want to skip this particular event.
+
+#### __`MASK_EVENT_MODEL`__
+(optional) _(EventModel) => EventModel_, a function that takes a [Moesif EventModel](https://github.com/Moesif/moesifapi-python/blob/master/moesifapi/models/event_model.py) and returns an EventModel with desired data removed. For details regarding EventModel please see the [Moesif Python API Documentation](https://www.moesif.com/docs/api?python).
 
 ## Example
 
