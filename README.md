@@ -68,6 +68,9 @@ but different frameworks and your implementation might be very different, it wou
 (optional) _(req, res) => boolean_, a function that takes a [Requests](http://docs.python-requests.org/en/master/api/) request and response,
 and returns true if you want to skip this particular event.
 
+#### __`MASK_EVENT_MODEL`__
+(optional) _(EventModel) => EventModel_, a function that takes a [Moesif EventModel](https://github.com/Moesif/moesifapi-python/blob/master/moesifapi/models/event_model.py) and returns an EventModel with desired data removed. For details regarding EventModel please see the [Moesif Python API Documentation](https://www.moesif.com/docs/api?python).
+
 ## Example
 
 An example Moesif integration is [available on GitHub](https://github.com/Moesif/moesif-python-outgoing-example)
