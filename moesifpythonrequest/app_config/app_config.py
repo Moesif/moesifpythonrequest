@@ -1,10 +1,14 @@
 from datetime import datetime
 from moesifapi.exceptions.api_exception import *
 import json
+from .regex_config_helper import RegexConfigHelper
 
 
 # Application Configuration
 class AppConfig:
+    def __init__(self):
+        self.regex_config_helper = RegexConfigHelper()
+        return
 
     def get_config(self, api_client, debug):
         """Get Config"""
@@ -27,19 +31,36 @@ class AppConfig:
                 print('Error while parsing the configuration object, setting the sample rate to default')
             return None, 100, datetime.utcnow()
 
-    def get_sampling_percentage(self, config, user_id, company_id):
+    def get_sampling_percentage(self, event_data, config, user_id, company_id):
         """Get sampling percentage"""
 
-        config_body = json.loads(config.raw_body)
+        if config is not None:
+            try:
+                config_body = json.loads(config.raw_body)
 
-        user_sample_rate = config_body.get('user_sample_rate', None)
+                user_sample_rate = config_body.get('user_sample_rate', None)
 
-        company_sample_rate = config_body.get('company_sample_rate', None)
+                company_sample_rate = config_body.get('company_sample_rate', None)
 
-        if user_id and user_sample_rate and user_id in user_sample_rate:
-            return user_sample_rate[user_id]
+                regex_config = config_body.get('regex_config', None)
 
-        if company_id and company_sample_rate and company_id in company_sample_rate:
-            return company_sample_rate[company_id]
+                if regex_config:
+                    config_mapping = self.regex_config_helper.prepare_config_mapping(event_data)
+                    regex_sample_rate = self.regex_config_helper.fetch_sample_rate_on_regex_match(regex_config, config_mapping)
+                    if regex_sample_rate:
+                        return regex_sample_rate
 
-        return config_body.get('sample_rate', 100)
+                if user_id and user_sample_rate and user_id in user_sample_rate:
+                    return user_sample_rate[user_id]
+
+                if company_id and company_sample_rate and company_id in company_sample_rate:
+                    return company_sample_rate[company_id]
+
+                return config_body.get('sample_rate', 100)
+
+            except Exception as e:
+                print("Error while parsing user or company sample rate")
+                print(e)
+
+        # Use default
+        return 100

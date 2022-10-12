@@ -49,7 +49,7 @@ class SendMoesif():
                 print("Can not execute MASK_EVENT_MODEL function. Please check moesif settings.")
 
         random_percentage = random.random() * 100
-        gv.sampling_percentage = gv.app_config.get_sampling_percentage(gv.config, event_model.user_id, event_model.company_id)
+        gv.sampling_percentage = gv.app_config.get_sampling_percentage(event_model, gv.config, event_model.user_id, event_model.company_id)
 
         if gv.sampling_percentage >= random_percentage:
             event_model.weight = 1 if gv.sampling_percentage == 0 else math.floor(100 / gv.sampling_percentage)
