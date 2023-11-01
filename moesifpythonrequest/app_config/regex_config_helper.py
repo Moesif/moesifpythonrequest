@@ -50,7 +50,7 @@ class RegexConfigHelper:
         Return:
              regex_matched: Regex matched value to determine if the regex match was successful
         """
-        extracted = re.search(condition_value, event_value)
+        extracted = re.search(str(condition_value), str(event_value))
         if extracted is not None:
             return extracted.group(0)
 
