@@ -47,7 +47,7 @@ class AppConfig:
                 if regex_config:
                     config_mapping = self.regex_config_helper.prepare_config_mapping(event_data)
                     regex_sample_rate = self.regex_config_helper.fetch_sample_rate_on_regex_match(regex_config, config_mapping)
-                    if regex_sample_rate:
+                    if regex_sample_rate is not None:
                         return regex_sample_rate
 
                 if user_id and user_sample_rate and user_id in user_sample_rate:
