@@ -2,7 +2,9 @@ from datetime import datetime
 from moesifapi.exceptions.api_exception import *
 import json
 from .regex_config_helper import RegexConfigHelper
+import logging
 
+logger = logging.getLogger(__name__)
 
 # Application Configuration
 class AppConfig:
@@ -17,10 +19,9 @@ class AppConfig:
             return config_api_response
         except APIException as inst:
             if 401 <= inst.response_code <= 403:
-                print("Unauthorized access getting application configuration. Please check your Appplication Id.")
+                logger.info("Unauthorized access getting application configuration. Please check your Appplication Id.")
             if debug:
-                print("Error getting application configuration, with status code:")
-                print(inst.response_code)
+                logger.info(f"Error getting application configuration, with status code: {str(inst.response_code)}")
 
     def parse_configuration(self, config, debug):
         """Parse configuration object and return Etag, sample rate and last updated time"""
@@ -28,7 +29,7 @@ class AppConfig:
             return config.headers.get("X-Moesif-Config-ETag"), json.loads(config.raw_body).get('sample_rate', 100), datetime.utcnow()
         except:
             if debug:
-                print('Error while parsing the configuration object, setting the sample rate to default')
+                logger.info('Error while parsing the configuration object, setting the sample rate to default')
             return None, 100, datetime.utcnow()
 
     def get_sampling_percentage(self, event_data, config, user_id, company_id):
@@ -59,8 +60,7 @@ class AppConfig:
                 return config_body.get('sample_rate', 100)
 
             except Exception as e:
-                print("Error while parsing user or company sample rate")
-                print(e)
+                logger.info(f"Error while parsing user or company sample rate: {str(e)}")
 
         # Use default
         return 100

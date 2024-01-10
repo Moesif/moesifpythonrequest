@@ -1,2 +1,2 @@
-requests==2.31.0
-moesifapi==1.4.1
+requests
+moesifapi==1.4.2

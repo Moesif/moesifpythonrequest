@@ -4,6 +4,9 @@ from ..patch_request.patch_request import PatchRequest
 from ..send_moesif.send_moesif import SendMoesif
 from ..app_config.app_config import AppConfig
 from moesifapi.moesif_api_client import MoesifAPIClient, Configuration
+import logging
+
+logger = logging.getLogger(__name__)
 
 class StartCapture():
 
@@ -15,9 +18,9 @@ class StartCapture():
         gv.DEBUG = gv.moesif_options.get('LOCAL_DEBUG', False)
 
         if gv.MOESIF_PATCH:
-            print('Already started patching the outgoing requests')
+            logger.info('Already started patching the outgoing requests')
         else:
-            print('Starting to patch the outgoing requests')
+            logger.info('Starting to patch the outgoing requests')
 
             gv.MOESIF_PATCH = True
             # Create an instance of the class
@@ -44,6 +47,6 @@ class StartCapture():
                         gv.config, gv.DEBUG)
             except:
                 if gv.DEBUG:
-                    print('Error while parsing application configuration on initialization')
+                    logger.info('Error while parsing application configuration on initialization')
 
             _unpatch = patch_instance.patch(send_async.send_moesif_async)
