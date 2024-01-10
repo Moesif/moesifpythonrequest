@@ -60,7 +60,7 @@ class AppConfig:
                 return config_body.get('sample_rate', 100)
 
             except Exception as e:
-                logger.info(f"Error while parsing user or company sample rate: {str(e)}")
+                logger.warning(f"Error while parsing user or company sample rate: {str(e)}")
 
         # Use default
         return 100

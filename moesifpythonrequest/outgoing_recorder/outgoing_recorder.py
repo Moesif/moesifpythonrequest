@@ -23,7 +23,7 @@ class OutgoingRecorder():
                 logger.info(f"base64 encoded body: {str(encoded_body)}")
         except:
             if global_variables.DEBUG:
-                logger.info("Outgoing Body is of type other than json or base64")
+                logger.warning("Outgoing Body is of type other than json or base64")
             encoded_body = None
             transfer_encoding = None
 

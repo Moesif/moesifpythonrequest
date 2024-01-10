@@ -34,7 +34,7 @@ class SendMoesif():
                 logger.info("Event sent successfully")
         except APIException as inst:
             if 401 <= inst.response_code <= 403:
-                logger.info("Unauthorized access sending event to Moesif. Please check your Appplication Id.")
+                logger.error("Unauthorized access sending event to Moesif. Please check your Appplication Id.")
             if gv.DEBUG:
                 logger.info(f"Error sending event to Moesif, with status code: {str(inst.response_code)}")
 
