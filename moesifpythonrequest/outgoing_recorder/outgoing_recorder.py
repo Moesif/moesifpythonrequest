@@ -5,6 +5,9 @@ from .. import global_variables
 import base64
 import json
 from ..utility_function.utility_function import UtilityFunction
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class OutgoingRecorder():
@@ -13,14 +16,14 @@ class OutgoingRecorder():
     def base64_encode(self, data):
         try:
             if global_variables.DEBUG:
-                print("about to parse outgoing body as base64")
+                logger.info("about to parse outgoing body as base64")
             encoded_body = (base64.standard_b64encode(data)).decode(encoding='UTF-8')
             transfer_encoding = 'base64'
             if global_variables.DEBUG:
-                print("base64 encoded body: " + encoded_body)
+                logger.info(f"base64 encoded body: {str(encoded_body)}")
         except:
             if global_variables.DEBUG:
-                print("Outgoing Body is of type other than json or base64")
+                logger.warning("Outgoing Body is of type other than json or base64")
             encoded_body = None
             transfer_encoding = None
 
@@ -35,10 +38,10 @@ class OutgoingRecorder():
         if global_variables.moesif_options.get('LOG_BODY_OUTGOING', True) and mock_req.body:
             try:
                 if global_variables.DEBUG:
-                    print('about to parse request json')
+                    logger.info('about to parse request json')
                 req_body = json.loads(mock_req.body)
                 if global_variables.DEBUG:
-                    print("Req body json parsed successfully")
+                    logger.info("Req body json parsed successfully")
                 req_body = utility_function.mask_body(req_body, global_variables.moesif_options.get('REQUEST_BODY_MASKS'))
                 req_body_transfer_encoding = 'json'
             except:
@@ -50,10 +53,10 @@ class OutgoingRecorder():
         if global_variables.moesif_options.get('LOG_BODY_OUTGOING', True) and mock_res.content:
             try:
                 if global_variables.DEBUG:
-                    print("about to process response body as json")
+                    logger.info("about to process response body as json")
                 rsp_body = json.loads(mock_res.content)
                 if global_variables.DEBUG:
-                    print("Resp body json parsed successfully")
+                    logger.info("Resp body json parsed successfully")
                 rsp_body = utility_function.mask_body(rsp_body, global_variables.moesif_options.get('RESPONSE_BODY_MASKS'))
                 rsp_body_transfer_encoding = 'json'
             except:
@@ -100,7 +103,7 @@ class OutgoingRecorder():
                 event_model['user_id'] = identify_user(mock_req, mock_res)
         except:
             if global_variables.DEBUG:
-                print("can not execute identify_user function, Please check moesif settings.")
+                logger.info("can not execute identify_user function, Please check moesif settings.")
 
         event_model['company_id'] = None
         try:
@@ -109,7 +112,7 @@ class OutgoingRecorder():
                 event_model['company_id'] = identify_company(mock_req, mock_res)
         except:
             if global_variables.DEBUG:
-                print("can not execute identify_company function, Please check moesif settings.")
+                logger.info("can not execute identify_company function, Please check moesif settings.")
 
         event_model['session_token'] = None
         try:
@@ -118,7 +121,7 @@ class OutgoingRecorder():
                 event_model['session_token'] = get_session_token(mock_req, mock_res)
         except:
             if global_variables.DEBUG:
-                print("Can not execute get_session_token function. Please check moesif settings.")
+                logger.info("Can not execute get_session_token function. Please check moesif settings.")
 
         event_model['metadata'] = None
         try:
@@ -127,7 +130,7 @@ class OutgoingRecorder():
                 event_model['metadata'] = get_metadata(mock_req, mock_res)
         except:
             if global_variables.DEBUG:
-                print("can not execute get_metadata function, please check moesif settings.")
+                logger.info("can not execute get_metadata function, please check moesif settings.")
 
         try:
             skip_event = options.get('SKIP_OUTGOING', None)
@@ -136,7 +139,7 @@ class OutgoingRecorder():
                     return mock_res
         except:
             if global_variables.DEBUG:
-                print("Having difficulty executing skip_event function. Please check moesif settings.")
+                logger.info("Having difficulty executing skip_event function. Please check moesif settings.")
 
         # Prepare the moesif model
         mo_model = self.prepare_model(mock_req, mock_res, event_model, start_time, end_time)

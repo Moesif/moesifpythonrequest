@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 import threading
 import random
 import math
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SendMoesif():
@@ -12,7 +15,7 @@ class SendMoesif():
     def send_event(self, event_model):
         try:
             if gv.DEBUG:
-                print('Calling API to create event')
+                logger.info('Calling API to create event')
             event_api_response = gv.api_client.create_event(event_model)
             event_response_config_etag = event_api_response.get("X-Moesif-Config-ETag")
 
@@ -26,15 +29,14 @@ class SendMoesif():
                         gv.config, gv.DEBUG)
                 except:
                     if gv.DEBUG:
-                        print('Error while updating the application configuration')
+                        logger.info('Error while updating the application configuration')
             if gv.DEBUG:
-                print("Event sent successfully")
+                logger.info("Event sent successfully")
         except APIException as inst:
             if 401 <= inst.response_code <= 403:
-                print("Unauthorized access sending event to Moesif. Please check your Appplication Id.")
+                logger.error("Unauthorized access sending event to Moesif. Please check your Appplication Id.")
             if gv.DEBUG:
-                print("Error sending event to Moesif, with status code:")
-                print(inst.response_code)
+                logger.info(f"Error sending event to Moesif, with status code: {str(inst.response_code)}")
 
     # Function to send event async
     def send_moesif_async(self, event_model):
@@ -42,11 +44,11 @@ class SendMoesif():
             mask_event_model = gv.moesif_options.get('MASK_EVENT_MODEL', None)
             if mask_event_model is not None:
                 if gv.DEBUG:
-                    print('Masking the event')
+                    logger.info('Masking the event')
                 event_model = mask_event_model(event_model)
         except:
             if gv.DEBUG:
-                print("Can not execute MASK_EVENT_MODEL function. Please check moesif settings.")
+                logger.info("Can not execute MASK_EVENT_MODEL function. Please check moesif settings.")
 
         random_percentage = random.random() * 100
         gv.sampling_percentage = gv.app_config.get_sampling_percentage(event_model, gv.config, event_model.user_id, event_model.company_id)
@@ -55,9 +57,9 @@ class SendMoesif():
             event_model.weight = 1 if gv.sampling_percentage == 0 else math.floor(100 / gv.sampling_percentage)
             sending_background_thread = threading.Thread(target=self.send_event, args=(event_model,))
             if gv.DEBUG:
-                print('Staring a new thread')
+                logger.info('Staring a new thread')
             sending_background_thread.start()
         else:
             if gv.DEBUG:
-                print('Skipped Event due to sampling percentage: ' + str(
+                logger.info('Skipped Event due to sampling percentage: ' + str(
                     gv.sampling_percentage) + ' and random percentage: ' + str(random_percentage))
