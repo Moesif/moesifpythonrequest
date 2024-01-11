@@ -19,7 +19,7 @@ class AppConfig:
             return config_api_response
         except APIException as inst:
             if 401 <= inst.response_code <= 403:
-                logger.info("Unauthorized access getting application configuration. Please check your Appplication Id.")
+                logger.warning("Unauthorized access getting application configuration. Please check your Appplication Id.")
             if debug:
                 logger.info(f"Error getting application configuration, with status code: {str(inst.response_code)}")
 
