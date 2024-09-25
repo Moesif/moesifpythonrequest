@@ -84,7 +84,7 @@ Other troubleshooting supports:
 ```
 
 ## Configuration options
-The following sections describe the available configuration options. You have to set these options in a Python dictionary and pass that as an argument as you call the `start_capture_outgoing` method. See the [example]([#examples](https://github.com/Moesif/moesif-python-outgoing-example/blob/836b1f38be6e3ccc08c840ab328af501375fa849/main.py#L31)) for better understanding.
+The following sections describe the available configuration options. You have to set these options in a Python dictionary and pass that as an argument as you call the `start_capture_outgoing` method. See the [example](https://github.com/Moesif/moesif-python-outgoing-example/blob/master/main.py#L31) for better understanding.
 
 ### `APPLICATION_ID` (Required)
 <table>
