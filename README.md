@@ -1,4 +1,5 @@
-# Moesif Python Requests
+# Moesif for Python Requests
+by [Moesif](https://moesif.com), the [API analytics](https://www.moesif.com/features/api-analytics) and [API monetization](https://www.moesif.com/solutions/metered-api-billing) platform.
 
 [![Built For][ico-built-for]][link-built-for]
 [![Latest Version][ico-version]][link-package]
@@ -6,25 +7,47 @@
 [![Software License][ico-license]][link-license]
 [![Source Code][ico-source]][link-source]
 
-Interceptor for Python Requests lib to capture _outgoing_ API calls and sends to [Moesif](https://www.moesif.com) for API analytics and monitoring.
+It's an interceptor for Python Requests library that captures outgoing API calls and sends to [Moesif](https://www.moesif.com) for API analytics and monitoring.
 
-_If you are using Moesif's API monitoring SDKs like [Moesif Django](https://github.com/Moesif/moesifdjango) or [Moesif WSGI](https://github.com/moesif/moesifwsgi) to log incoming API calls, this library is already included._
+> If you're new to Moesif, see [our Getting Started](https://www.moesif.com/docs/) resources to quickly get up and running.
 
-## How to install
+> If you are using Moesif's API monitoring SDKs like [Moesif Django](https://github.com/Moesif/moesifdjango) or [Moesif WSGI](https://github.com/moesif/moesifwsgi) to log incoming API calls, this library is already included.
+
+## Prerequisites
+Before using this middleware, make sure you have the following:
+
+- [An active Moesif account](https://moesif.com/wrap)
+- [A Moesif Application ID](#get-your-moesif-application-id)
+
+### Get Your Moesif Application ID
+After you log into [Moesif Portal](https://www.moesif.com/wrap), you can get your Moesif Application ID during the onboarding steps. You can always access the Application ID any time by following these steps from Moesif Portal after logging in:
+
+1. Select the account icon to bring up the settings menu.
+2. Select **Installation** or **API Keys**.
+3. Copy your Moesif Application ID from the **Collector Application ID** field.
+<img class="lazyload blur-up" src="images/app_id.png" width="700" alt="Accessing the settings menu in Moesif Portal">
+
+## Install
+Install with pip:
 
 ```shell
 pip install moesifpythonrequest
 ```
 
-Import the Moesif lib and call start_capture_outgoing.
-Moesif will start logging all API calls made from the requests lib.
+## Configure
+See the available [configuration options](#configuration-options) to learn how to configure the middleware for your use case.
+
+## How to Use
+
+Import the Moesif library and call the `start_capture_outgoing` method.
+Moesif will start logging all API calls made from the Requests library.
 
 ```python
 from moesifpythonrequest.start_capture.start_capture import StartCapture
 import requests
 
 moesif_settings = {
-    'APPLICATION_ID': 'Your Moesif Application Id'
+    'APPLICATION_ID': 'YOUR_MOESIF_APPLICATION_ID'
 }
 
 def main():
@@ -36,56 +59,277 @@ StartCapture().start_capture_outgoing(moesif_settings)
 main()
 ```
 
-Your Moesif Application Id can be found in the [_Moesif Portal_](https://www.moesif.com/).
-After signing up for a Moesif account, your Moesif Application Id will be displayed during the onboarding steps.
+Replace *`YOUR_MOESIF_APPLICATION_ID`* with [your Moesif Application ID](#get-your-moesif-application-id).
+
+For a general troubleshooting guide that can help you solve common problems, see [Server Troubleshooting Guide](https://www.moesif.com/docs/troubleshooting/server-troubleshooting-guide/).
+
+Other troubleshooting supports:
+
+- [FAQ](https://www.moesif.com/docs/faq/)
+- [Moesif support email](mailto:support@moesif.com)
+
+## Repository Structure
+
+```
+.
+├── images/
+├── LICENSE
+├── MANIFEST.in
+├── moesifpythonrequest/
+├── README.md
+├── register.py
+├── requirements.txt
+├── setup.cfg
+└── setup.py
+```
 
 ## Configuration options
+The following sections describe the available configuration options. You have to set these options in a Python dictionary and pass that as an argument as you call the `start_capture_outgoing` method. See the [example]([#examples](https://github.com/Moesif/moesif-python-outgoing-example/blob/836b1f38be6e3ccc08c840ab328af501375fa849/main.py#L31)) for better understanding.
 
-### __`APPLICATION_ID`__
+### `APPLICATION_ID` (Required)
+<table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+  </tr>
+  <tr>
+   <td>
+    String
+   </td>
+  </tr>
+</table>
 
-(required) _string_, Your Moesif Application Id which can be found by logging
-into the [_Moesif Portal_](https://www.moesif.com/), click on the top right menu,
-and then clicking _Installation_.
+A string that [identifies your application in Moesif](#get-your-moesif-application-id).
 
-### __`GET_METADATA_OUTGOING`__
+### `GET_METADATA_OUTGOING`
+table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+   <th scope="col">
+    Parameters
+   </th>
+   <th scope="col">
+    Return type
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Function
+   </td>
+   <td>
+    <code>(req, res)</code>
+   </td>
+   <td>
+    Dictionary
+   </td>
+  </tr>
+</table>
 
-(optional) _(req, res) => dictionary_, a function that enables you to return custom metadata associated with the logged API calls.
-Takes in the [Requests](http://docs.python-requests.org/en/master/api/) request and response object as arguments. You should implement a function that
-returns a dictionary containing your custom metadata. (must be able to be encoded into JSON). For example, you may want to save a VM instance_id, a trace_id, or a resource_id with the request.
+Optional.
 
-### __`IDENTIFY_USER_OUTGOING`__
+A function that enables you to return custom metadata associated with the logged API calls.
 
-(optional, but highly recommended) _(req, res) => string_, a function that takes [Requests](http://docs.python-requests.org/en/master/api/) request and response, and returns a string that is the user id used by your system. While Moesif tries to identify users automatically,
-but different frameworks and your implementation might be very different, it would be helpful and much more accurate to provide this function.
+Takes in the [Requests](http://docs.python-requests.org/en/master/api/) request and response objects as arguments. 
 
-### __`IDENTIFY_COMPANY_OUTGOING`__
+We recommend that you implement a function that
+returns a dictionary containing your custom metadata. The dictionary must be a valid one that can be encoded into JSON. For example, you may want to save a virtual machine instance ID, a trace ID, or a resource ID with the request.
 
-(optional) _(req, res) => string_, a function that takes [Requests](http://docs.python-requests.org/en/master/api/) request and response, and returns a string that is the company id for this event.
+### `IDENTIFY_USER_OUTGOING`
+<table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+   <th scope="col">
+    Parameters
+   </th>
+   <th scope="col">
+    Return type
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Function
+   </td>
+   <td>
+    <code>(req, res)</code>
+   </td>
+   <td>
+    String
+   </td>
+  </tr>
+</table>
 
-### __`GET_SESSION_TOKEN_OUTGOING`__
+Optional, but highly recommended.
 
-(optional) _(req, res) => string_, a function that takes [Requests](http://docs.python-requests.org/en/master/api/) request and response, and returns a string that is the session token for this event. Again, Moesif tries to get the session token automatically, but if you setup is very different from standard, this function will be very help for tying events together, and help you replay the events.
+A function that takes [Requests](http://docs.python-requests.org/en/master/api/) request and response objects, and returns a string that represents the user ID used by your system. 
 
-### __`LOG_BODY_OUTGOING`__
+While Moesif tries to identify users automatically, different frameworks and your implementation might vary. So we highly recommend that you accurately provide a 
+user ID using this function.
 
-(optional) _boolean_, default True, Set to False to remove logging request and response body.
+### `IDENTIFY_COMPANY_OUTGOING`
+<table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+   <th scope="col">
+    Parameters
+   </th>
+   <th scope="col">
+    Return type
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Function
+   </td>
+   <td>
+    <code>(req, res)</code>
+   </td>
+   <td>
+    String
+   </td>
+  </tr>
+</table>
 
-### __`SKIP_OUTGOING`__
+Optional.
 
-(optional) _(req, res) => boolean_, a function that takes a [Requests](http://docs.python-requests.org/en/master/api/) request and response,
-and returns true if you want to skip this particular event.
+A function that takes [Requests](http://docs.python-requests.org/en/master/api/) request and response objects and returns a string that represents the company ID for this event.
 
-### __`MASK_EVENT_MODEL`__
 
-(optional) _(EventModel) => EventModel_, a function that takes a [Moesif EventModel](https://github.com/Moesif/moesifapi-python/blob/master/moesifapi/models/event_model.py) and returns an EventModel with desired data removed. For details regarding EventModel please see the [Moesif Python API Documentation](https://www.moesif.com/docs/api?python).
+### `GET_SESSION_TOKEN_OUTGOING`
+<table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+   <th scope="col">
+    Parameters
+   </th>
+   <th scope="col">
+    Return type
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Function
+   </td>
+   <td>
+    <code>(req, res)</code>
+   </td>
+   <td>
+    String
+   </td>
+  </tr>
+</table>
 
-## Example
+Optional.
 
-An example Moesif integration is [available on GitHub](https://github.com/Moesif/moesif-python-outgoing-example)
+A function that takes [Requests](http://docs.python-requests.org/en/master/api/) request and response objects, and returns a string that corresponds to the session token for this event. 
 
-## Other integrations
+Similar to [user IDs](#identify_user_outgoing), Moesif tries to get the session token automatically. However, if you setup differs from the standard, this function can help tying up events together and help you replay the events.
 
-To view more documentation on integration options, please visit __[the Integration Options Documentation](https://www.moesif.com/docs/getting-started/integration-options/).__
+### `LOG_BODY_OUTGOING`
+<table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+   <th scope="col">
+    Default
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Boolean
+   </td>
+   <td>
+    <code>True</code>
+   </td>
+  </tr>
+</table>
+
+Optional.
+
+Set to `False` to remove logging request and response body.
+
+### `SKIP_OUTGOING`
+<table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+   <th scope="col">
+    Parameters
+   </th>
+   <th scope="col">
+    Return type
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Function
+   </td>
+   <td>
+    <code>(req, res)</code>
+   </td>
+   <td>
+    Boolean
+   </td>
+  </tr>
+</table>
+
+Optional.
+
+A function that takes a [Requests](http://docs.python-requests.org/en/master/api/) request and response objects,
+and returns `True` if you want to skip this particular event.
+
+### `MASK_EVENT_MODEL`
+<table>
+  <tr>
+   <th scope="col">
+    Data type
+   </th>
+   <th scope="col">
+    Parameters
+   </th>
+   <th scope="col">
+    Return type
+   </th>
+  </tr>
+  <tr>
+   <td>
+    Function
+   </td>
+   <td>
+    <code>(EventModel)</code>
+   </td>
+   <td>
+    <code>EventModel</code>
+   </td>
+  </tr>
+</table>
+
+Optional.
+
+A function that takes the final Moesif event model and returns an `EventModel` object with desired data removed.
+
+For more information about Moesif event model, see [Moesif Python API documentation](https://www.moesif.com/docs/api?python).
+
+## Examples
+
+An example Moesif integration is [available on GitHub](https://github.com/Moesif/moesif-python-outgoing-example).
+
+## Explore Other Integrations
+
+Explore other integration options from Moesif:
+
+- [Server integration options documentation](https://www.moesif.com/docs/server-integration//)
+- [Client integration options documentation](https://www.moesif.com/docs/client-integration/)
 
 [ico-built-for]: https://img.shields.io/badge/built%20for-python%20requests-blue.svg
 [ico-version]: https://img.shields.io/pypi/v/moesifpythonrequest.svg
