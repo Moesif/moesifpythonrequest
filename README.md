@@ -14,7 +14,7 @@ It's an interceptor for Python Requests library that captures outgoing API calls
 > If you are using Moesif's API monitoring SDKs like [Moesif Django](https://github.com/Moesif/moesifdjango) or [Moesif WSGI](https://github.com/moesif/moesifwsgi) to log incoming API calls, this library is already included.
 
 ## Prerequisites
-Before using this middleware, make sure you have the following:
+Before using Moesif for Python Requests, make sure you have the following:
 
 - [An active Moesif account](https://moesif.com/wrap)
 - [A Moesif Application ID](#get-your-moesif-application-id)
@@ -35,7 +35,7 @@ pip install moesifpythonrequest
 ```
 
 ## Configure
-See the available [configuration options](#configuration-options) to learn how to configure the middleware for your use case.
+See the available [configuration options](#configuration-options) to learn how to configure `moesifpythonrequest` for your use case.
 
 ## How to Use
 
@@ -61,6 +61,7 @@ main()
 
 Replace *`YOUR_MOESIF_APPLICATION_ID`* with [your Moesif Application ID](#get-your-moesif-application-id).
 
+## Troubleshoot
 For a general troubleshooting guide that can help you solve common problems, see [Server Troubleshooting Guide](https://www.moesif.com/docs/troubleshooting/server-troubleshooting-guide/).
 
 Other troubleshooting supports:
@@ -323,6 +324,9 @@ For more information about Moesif event model, see [Moesif Python API documentat
 ## Examples
 
 An example Moesif integration is [available on GitHub](https://github.com/Moesif/moesif-python-outgoing-example).
+
+## How to Get Help
+If you face any issues, try the [troubheshooting guidelines](#troubleshoot). For further assistance, reach out to our [support team](mailto:support@moesif.com).
 
 ## Explore Other Integrations
 
