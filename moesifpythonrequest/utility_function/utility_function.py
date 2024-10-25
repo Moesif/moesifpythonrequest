@@ -10,18 +10,11 @@ class UtilityFunction():
 
     # Function to check if the allowed url is valid
     def is_valid_url(url, allowed_hosts):
-        if url:
-            try:
-                parsed_url = urlparse(url)
-                host = parsed_url.netloc.lower()
-
-                if ':' in host:
-                    host = host.split(':')[0]
-
-                return host in allowed_hosts
-            except ValueError:
-                return False
-        return False
+        try:
+            parsed_url = urlparse(url)
+            return parsed_url.netloc.endswith('moesif.net')
+        except:
+            return False
 
     # Function to check if the event is to Moesif
     def is_moesif(self, request_headers, url):
@@ -29,8 +22,7 @@ class UtilityFunction():
             if request_headers.get('X-Moesif-SDK', None) is not None or request_headers.get('X-Moesif-Application-Id', None) is not None:
                 return True
 
-        allowed_hosts = ["moesif.net"]
-        return is_valid_url(url, allowed_hosts)
+        return is_valid_url(url)
 
     # Function to mask the body
     def mask_body(self, body, masks):
