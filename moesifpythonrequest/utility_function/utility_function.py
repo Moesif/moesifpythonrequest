@@ -9,10 +9,11 @@ class UtilityFunction():
         return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
 
     # Function to check if the allowed url is valid
-    def is_valid_url(url, allowed_hosts):
+    @classmethod
+    def is_valid_url(cls, url):
         try:
             parsed_url = urlparse(url)
-            return parsed_url.netloc.endswith('moesif.net')
+            return parsed_url.netloc.endswith('.moesif.net')
         except:
             return False
 
@@ -22,7 +23,7 @@ class UtilityFunction():
             if request_headers.get('X-Moesif-SDK', None) is not None or request_headers.get('X-Moesif-Application-Id', None) is not None:
                 return True
 
-        return is_valid_url(url)
+        return self.is_valid_url(url)
 
     # Function to mask the body
     def mask_body(self, body, masks):
