@@ -1,12 +1,20 @@
 # Import libraries
 from moesifapi.moesif_api_client import APIHelper
 from datetime import datetime
-
+from urllib.parse import urlparse
 
 class UtilityFunction():
     # Function to get the current time
     def get_current_time(self):
         return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+
+    # Function to check if the allowed url is valid
+    def is_valid_url(url, allowed_hosts):
+        try:
+            parsed_url = urlparse(url)
+            return parsed_url.netloc.endswith('moesif.net')
+        except:
+            return False
 
     # Function to check if the event is to Moesif
     def is_moesif(self, request_headers, url):
@@ -14,10 +22,7 @@ class UtilityFunction():
             if request_headers.get('X-Moesif-SDK', None) is not None or request_headers.get('X-Moesif-Application-Id', None) is not None:
                 return True
 
-        if url and 'moesif.net' in url:
-            return True
-
-        return False
+        return is_valid_url(url)
 
     # Function to mask the body
     def mask_body(self, body, masks):
