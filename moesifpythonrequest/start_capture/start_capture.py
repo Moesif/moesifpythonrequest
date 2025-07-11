@@ -2,7 +2,7 @@
 from .. import global_variables as gv
 from ..patch_request.patch_request import PatchRequest
 from ..send_moesif.send_moesif import SendMoesif
-from ..app_config.app_config import AppConfig
+from moesifapi.app_config import AppConfig
 from moesifapi.moesif_api_client import MoesifAPIClient, Configuration
 import logging
 
